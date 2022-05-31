@@ -13,8 +13,14 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'org.springframework:spring-web:5.3.20'
+	implementation 'org.json:json:20220320'
+	testImplementation('junit:junit:(4.13.2)')
 }
 
 tasks.named('test') {
