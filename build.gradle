@@ -20,6 +20,7 @@ dependencies {
 	implementation 'javax.validation:validation-api:2.0.1.Final'
 	implementation 'org.springframework:spring-web:5.3.20'
 	implementation 'org.json:json:20220320'
+	implementation 'org.springframework:spring-web:5.3.20'
 	testImplementation('junit:junit:(4.13.2)')
 }
 

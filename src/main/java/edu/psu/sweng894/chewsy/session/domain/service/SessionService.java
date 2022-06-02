@@ -7,7 +7,9 @@ import org.json.JSONArray;
 
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface SessionService {
     UUID createSession(Attendee attendee);
 
@@ -19,7 +21,7 @@ public interface SessionService {
 
     void removeAttendee(UUID id, String email);
 
-    JSONArray getRestaurantList(UUID id);
+    String getRestaurantList(UUID id);
     
     List<Attendee> getAttendees(UUID id);
 

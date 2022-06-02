@@ -11,7 +11,9 @@ import edu.psu.sweng894.chewsy.session.domain.Session;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
 import edu.psu.sweng894.chewsy.session.domain.repository.ConciergeRepository;
 import edu.psu.sweng894.chewsy.session.domain.repository.SessionRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DomainSessionService implements SessionService {
 
     private final SessionRepository sessionRepository;
@@ -30,7 +32,7 @@ public class DomainSessionService implements SessionService {
         return session.getId();
     }
 
-    public JSONArray getRestaurantList(final UUID id) {
+    public String getRestaurantList(final UUID id) {
         final Session session = getSession(id);
 
         return session.getRestaurantList();
@@ -52,7 +54,7 @@ public class DomainSessionService implements SessionService {
     public void addRestaurantList(final UUID id, final String location, final int radius) {
         final Session session = getSession(id);
         try {
-            session.addRestaurantList(conciergeRepository.getRestaurants(location, radius));
+            session.addRestaurantList(conciergeRepository.getRestaurants(location, radius).toString());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

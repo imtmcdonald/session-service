@@ -11,7 +11,7 @@ public class Session {
     private UUID id;
     private SessionStatus status;
     private List<Attendee> attendees;
-    private JSONArray restaurantList;
+    private String restaurantList;
 
     public Session(final UUID id, final String email) {
         this.id = id;
@@ -24,7 +24,7 @@ public class Session {
         this.status = SessionStatus.COMPLETED;
     }
 
-    public void addRestaurantList(JSONArray restaurantList) {
+    public void addRestaurantList(String restaurantList) {
         validateState();
         this.restaurantList = restaurantList;
     }
@@ -73,7 +73,7 @@ public class Session {
         return Collections.unmodifiableList(attendees);
     }
 
-    public JSONArray getRestaurantList() {
+    public String getRestaurantList() {
         return this.restaurantList;
     }
 

@@ -10,7 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import edu.psu.sweng894.chewsy.session.domain.repository.ConciergeRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class ConciergeAPIRespository implements ConciergeRepository {
     private String conciergeEndpoint = System.getenv("CONCIERGE_ENDPOINT");
     
