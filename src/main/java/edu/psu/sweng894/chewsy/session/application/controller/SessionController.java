@@ -11,13 +11,16 @@ import org.springframework.web.bind.annotation.*;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
+import edu.psu.sweng894.chewsy.session.application.request.CompleteSessionRequest;
 import edu.psu.sweng894.chewsy.session.application.request.CreateSessionRequest;
 import edu.psu.sweng894.chewsy.session.application.request.GetAttendeesRequest;
 import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetRestaurantListResponse;
+import edu.psu.sweng894.chewsy.session.application.response.GetSessionStatusResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
+import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
 
 @RestController
@@ -35,6 +38,20 @@ public class SessionController {
         final UUID id = sessionService.createSession(createSessionRequest.getAttendee());
         
         return new CreateSessionResponse(id);
+    }
+
+    @GetMapping(value = "/{id}/status", produces = MediaType.APPLICATION_JSON_VALUE)
+    String getSessionStatus(@PathVariable final UUID id) {
+        final SessionStatus sessionStatus = sessionService.getStatus(id);
+
+        System.out.println(sessionStatus);
+
+        return sessionStatus.toString();
+    }
+
+    @GetMapping(value = "/{id}/status/complete")
+    void completeSession(@PathVariable final UUID id) {
+        sessionService.completeSession(id);
     }
 
     @GetMapping(value = "/{id}/attendees", produces = MediaType.APPLICATION_JSON_VALUE)
