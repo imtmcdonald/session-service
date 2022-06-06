@@ -1,4 +1,4 @@
-package edu.psu.sweng894.chewsy.session.infrastructure.repository.MockPostgreSQLDB;
+package edu.psu.sweng894.chewsy.session.infrastructure.repository.PostgreSQLDB;
 
 import java.util.ArrayList;
 import java.util.List;

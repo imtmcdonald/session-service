@@ -1,20 +1,17 @@
-package edu.psu.sweng894.chewsy.session;
+package edu.psu.sweng894.chewsy.session.domain.service;
 
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.repository.ConciergeRepository;
 import edu.psu.sweng894.chewsy.session.domain.repository.SessionRepository;
-import edu.psu.sweng894.chewsy.session.domain.service.DomainSessionService;
-import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
-import edu.psu.sweng894.chewsy.session.infrastructure.repository.ConciergeAPI.ConciergeAPIRespository;
-import edu.psu.sweng894.chewsy.session.infrastructure.repository.MockPostgreSQLDB.MockPostgreSQLDBRepository;
+import edu.psu.sweng894.chewsy.session.infrastructure.repository.ConciergeAPI.MockConciergeAPIRepository;
+import edu.psu.sweng894.chewsy.session.infrastructure.repository.PostgreSQLDB.MockPostgreSQLDBRepository;
 
 @SpringBootTest
 public class DomainSessionServiceTests {
@@ -23,7 +20,7 @@ public class DomainSessionServiceTests {
     public final Attendee attendee = new Attendee(email);
     public final Attendee newAttendee = new Attendee(newEmail);
     public final SessionRepository sessionRepository = new MockPostgreSQLDBRepository();
-    public final ConciergeRepository conciergeRepository = new ConciergeAPIRespository();
+    public final ConciergeRepository conciergeRepository = new MockConciergeAPIRepository();
     public final SessionService sessionService = new DomainSessionService(sessionRepository, conciergeRepository);
     public final UUID id = sessionService.createSession(attendee);
     public final List<Attendee> attendees = sessionService.getAttendees(id);
@@ -69,7 +66,10 @@ public class DomainSessionServiceTests {
         assertEquals("COMPLETED", actual);
     }
 
-    // session.addRestaurantList(id, "23666", 5);
-    // assertNotNull(session.getRestaurantList(id));
-    // System.out.println(session.getRestaurantList(id));
+    @Test
+    public void testRestaurantList() {
+        sessionService.addRestaurantList(id, "23666", 5);
+        assertNotNull(sessionService.getRestaurantList(id));
+        System.out.println(sessionService.getRestaurantList(id));
+    }
 }
