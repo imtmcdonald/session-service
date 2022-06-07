@@ -1,15 +1,13 @@
 package edu.psu.sweng894.chewsy.session.application.response;
 
-import java.util.UUID;
-
 public class CreateSessionResponse {
-    private final UUID id;
+    private final Long id;
 
-    public CreateSessionResponse(final UUID id) {
+    public CreateSessionResponse(final Long id) {
         this.id = id;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
     

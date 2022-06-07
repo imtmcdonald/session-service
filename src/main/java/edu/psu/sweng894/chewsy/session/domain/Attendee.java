@@ -1,13 +1,24 @@
 package edu.psu.sweng894.chewsy.session.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
 public class Attendee {
-    private final String email;
+    @Id
+    private String email;
+
+    protected Attendee() {}
 
     public Attendee(final String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "Session[email='%s']",
+            email);
     }
 
     public String getEmail() {

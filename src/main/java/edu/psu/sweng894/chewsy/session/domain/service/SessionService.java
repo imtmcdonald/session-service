@@ -1,9 +1,6 @@
 package edu.psu.sweng894.chewsy.session.domain.service;
 
 import java.util.List;
-import java.util.UUID;
-
-import org.json.JSONArray;
 
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
@@ -11,19 +8,21 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface SessionService {
-    UUID createSession(Attendee attendee);
+    String createAttendee(String email);
 
-    void addRestaurantList(final UUID id, final String location, final int radius);
+    Long createSession(Attendee attendee);
 
-    void addAttendee(UUID id, Attendee attendee);
+    void addRestaurantList(final Long id, final String location, final int radius);
 
-    void completeSession(UUID id);
+    void addAttendee(Long id, Attendee attendee);
 
-    void removeAttendee(UUID id, String email);
+    void completeSession(Long id);
 
-    String getRestaurantList(UUID id);
+    void removeAttendee(Long id, String email);
+
+    String getRestaurantList(Long id);
     
-    List<Attendee> getAttendees(UUID id);
+    List<Attendee> getAttendees(Long id);
 
-    SessionStatus getStatus(UUID id);
+    SessionStatus getStatus(Long id);
 }

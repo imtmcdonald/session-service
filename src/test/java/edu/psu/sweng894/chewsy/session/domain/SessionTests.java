@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class SessionTests {
     String email = "test@email.com";
     String testEmail = "jon.doe@email.com";
-    UUID id = UUID.fromString("d8422800-cf18-4394-a862-5eb17c93727c");
-    Session testSession = new Session(id, email);
+    Long id = Long.parseLong("1234");
+    Session testSession = new Session(email);
     List<Attendee> expected = new ArrayList<>();
 
     @Test
@@ -26,8 +25,8 @@ public class SessionTests {
 
     @Test
     public void TestGetId() {
-        UUID actual = testSession.getId();
-        UUID expected = id;
+        Long actual = testSession.getId();
+        Long expected = id;
         assertEquals(expected, actual);
     }
 
