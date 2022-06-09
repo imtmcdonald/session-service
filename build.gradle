@@ -1,0 +1,38 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.0'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'jacoco'
+}
+
+group = 'edu.psu.sweng894.chewsy'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.7.0'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.0'
+	implementation 'org.postgresql:postgresql:42.3.6'
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
+	implementation 'javax.validation:validation-api:2.0.1.Final'
+	implementation 'org.springframework:spring-web:5.3.20'
+	implementation 'org.json:json:20220320'
+	implementation 'org.springframework:spring-web:5.3.20'
+	testImplementation('junit:junit:(4.13.2)')
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
