@@ -5,17 +5,15 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import edu.psu.sweng894.chewsy.session.domain.Attendee;
-
 public class RemoveAttendeeRequest {
-    @NotNull private Attendee attendee;
+    @NotNull private String email;
 
     @JsonCreator
-    public RemoveAttendeeRequest(@JsonProperty("attendee") final Attendee attendee) {
-        this.attendee = attendee;
+    public RemoveAttendeeRequest(@JsonProperty("email") final String email) {
+        this.email = email;
     }
 
-    public Attendee getAttendee() {
-        return attendee;
+    public String getEmail() {
+        return email;
     }    
 }

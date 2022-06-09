@@ -35,7 +35,7 @@ public class SessionController {
 
     @PostMapping(value = "/create_session", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     CreateSessionResponse createSession(@RequestBody final CreateSessionRequest createSessionRequest) {
-        final Long id = sessionService.createSession(createSessionRequest.getAttendee());
+        final Long id = sessionService.createSession();
         
         return new CreateSessionResponse(id);
     }
@@ -63,12 +63,12 @@ public class SessionController {
 
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
-        sessionService.addAttendee(id, addAttendeeRequest.getAttendee());
+        sessionService.addAttendee(id, addAttendeeRequest.getEmail());
     }
 
     @DeleteMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void removeAttendee(@PathVariable final Long id, @RequestBody final RemoveAttendeeRequest removeAttendeeRequest) {
-        sessionService.removeAttendee(id, removeAttendeeRequest.getAttendee().getEmail());
+        sessionService.removeAttendee(id, removeAttendeeRequest.getEmail());
     }
 
     @PostMapping(value = "/{id}/restaurants", consumes = MediaType.APPLICATION_JSON_VALUE)

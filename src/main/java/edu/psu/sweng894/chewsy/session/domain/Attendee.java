@@ -8,8 +8,6 @@ public class Attendee {
     @Id
     private String email;
 
-    protected Attendee() {}
-
     public Attendee(final String email) {
         this.email = email;
     }

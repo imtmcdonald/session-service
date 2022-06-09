@@ -33,29 +33,63 @@ public class DomainSessionService implements SessionService {
     }
 
     @Override
-    public Long createSession(final Attendee attendee) {
-        final Session session = new Session(attendee.getEmail());
+    public void addAttendee(final Long id, final String email) {
+        final Session session = getSession(id);
+        final Attendee attendee = getAttendee(email);
+        session.addAttendee(attendee);
+
+        sessionRepository.save(session);
+    }
+
+    @Override
+    public void removeAttendee(final Long id, final String email) {
+        final Session session = getSession(id);
+        final Attendee attendee = getAttendee(email);
+        session.removeAttendee(attendee);
+
+        sessionRepository.save(session);
+    }
+
+    @Override
+    public List<Attendee> getAttendees(final Long id) {
+        final Session session = getSession(id);
+
+        return session.getAttendeeList();
+    }
+
+    private Attendee getAttendee(final String email) {
+        return attendeeRepository
+          .findById(email)
+          .orElseThrow(() -> new RuntimeException("Attendee with given email doesn't exist"));
+    }
+
+    @Override
+    public Long createSession() {
+        final Session session = new Session();
         sessionRepository.save(session);
 
         return session.getId();
     }
 
-    public String getRestaurantList(final Long id) {
-        final Session session = getSession(id);
-
-        return session.getRestaurantList();
-    }
-
-    public List<Attendee> getAttendees(final Long id) {
-        final Session session = getSession(id);
-
-        return session.getAttendees();
-    }
-
+    @Override
     public SessionStatus getStatus(final Long id) {
         final Session session = getSession(id);
 
         return session.getStatus();
+    }
+
+    @Override
+    public void completeSession(final Long id) {
+        final Session session = getSession(id);
+        session.setStatusComplete();
+
+        sessionRepository.save(session);
+    }
+
+    private Session getSession(final Long id) {
+        return sessionRepository
+          .findById(id)
+          .orElseThrow(() -> new RuntimeException("Session with given id doesn't exist"));
     }
 
     @Override
@@ -71,32 +105,9 @@ public class DomainSessionService implements SessionService {
     }
 
     @Override
-    public void addAttendee(final Long id, final Attendee attendee) {
+    public String getRestaurantList(final Long id) {
         final Session session = getSession(id);
-        session.addAttendee(attendee.getEmail());
 
-        sessionRepository.save(session);
-    }
-
-    @Override
-    public void completeSession(final Long id) {
-        final Session session = getSession(id);
-        session.complete();
-
-        sessionRepository.save(session);
-    }
-
-    @Override
-    public void removeAttendee(final Long id, final String email) {
-        final Session session = getSession(id);
-        session.removeAttendee(email);
-
-        sessionRepository.save(session);
-    }
-
-    private Session getSession(Long id) {
-        return sessionRepository
-          .findById(id)
-          .orElseThrow(() -> new RuntimeException("Session with given id doesn't exist"));
+        return session.getRestaurantList();
     }
 }

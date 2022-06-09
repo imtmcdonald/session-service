@@ -20,27 +20,36 @@ public class Session {
     private SessionStatus status;
     @Column
     @ElementCollection
-    private List<Attendee> attendees;
+    private List<Attendee> attendees = new ArrayList<Attendee>();
     @Lob
     private String restaurantList;
 
-    protected Session() {}
-
-    public Session(final String email) {
+    public Session() {
         this.status = SessionStatus.CREATED;
-        this.attendees = new ArrayList<>(Collections.singletonList(new Attendee(email)));
     }
 
     @Override
     public String toString() {
         return String.format(
-            "Session[id=%d, status='%s', attendees='%s']",
-            id, status, attendees);
+            "Session[id=%d, status='%s', attendees='%s', restaurants='%s']",
+            id, status, attendees, restaurantList);
     }
 
-    public void complete() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setStatusComplete() {
         validateState();
         this.status = SessionStatus.COMPLETED;
+    }
+
+    public SessionStatus getStatus() {
+        return status;
     }
 
     public void addRestaurantList(String restaurantList) {
@@ -48,24 +57,22 @@ public class Session {
         this.restaurantList = restaurantList;
     }
 
-    public void addAttendee(final String email) {
-        validateState();
-        validateEmail(email);
-        attendees.add(new Attendee(email));
+    public String getRestaurantList() {
+        return this.restaurantList;
     }
 
-    public void removeAttendee(final String email) {
+    public void addAttendee(final Attendee attendee) {
         validateState();
-        final Attendee attendee = getAttendee(email);
-        attendees.remove(attendee);
+        this.attendees.add(attendee);
     }
 
-    private Attendee getAttendee(final String email) {
-        return attendees.stream()
-            .filter(attendee -> attendee.getEmail()
-                .equals(email))
-            .findFirst()
-            .orElseThrow(() -> new DomainException("Attendee with " + email + " doesn't exist."));
+    public void removeAttendee(final Attendee attendee) {
+        validateState();
+        this.attendees.remove(attendee);
+    }
+
+    public List<Attendee> getAttendeeList() {
+        return Collections.unmodifiableList(attendees);
     }
 
     private void validateState() {
@@ -73,27 +80,4 @@ public class Session {
             throw new DomainException("The session is in completed state.");
         }
     }
-
-    private void validateEmail(final String email) {
-        if (email == null) {
-            throw new DomainException("The email cannot be null.");
-        }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public SessionStatus getStatus() {
-        return status;
-    }
-
-    public List<Attendee> getAttendees() {
-        return Collections.unmodifiableList(attendees);
-    }
-
-    public String getRestaurantList() {
-        return this.restaurantList;
-    }
-
 }
