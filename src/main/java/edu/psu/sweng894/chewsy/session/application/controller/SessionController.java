@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
 import edu.psu.sweng894.chewsy.session.application.request.CreateAttendeeRequest;
-import edu.psu.sweng894.chewsy.session.application.request.CreateSessionRequest;
 import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
@@ -33,8 +32,8 @@ public class SessionController {
         sessionService.createAttendee(createAttendeeRequest.getEmail()); 
     }
 
-    @PostMapping(value = "/create_session", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    CreateSessionResponse createSession(@RequestBody final CreateSessionRequest createSessionRequest) {
+    @PostMapping(value = "/create_session", produces = MediaType.APPLICATION_JSON_VALUE)
+    CreateSessionResponse createSession() {
         final Long id = sessionService.createSession();
         
         return new CreateSessionResponse(id);
@@ -55,7 +54,7 @@ public class SessionController {
     }
 
     @GetMapping(value = "/{id}/attendees", produces = MediaType.APPLICATION_JSON_VALUE)
-    GetAttendeesResponse getAttendee(@PathVariable final Long id) {
+    GetAttendeesResponse getAttendeeList(@PathVariable final Long id) {
         final List<Attendee> attendees = sessionService.getAttendees(id);
 
         return new GetAttendeesResponse(attendees);
@@ -77,7 +76,7 @@ public class SessionController {
     }
 
     @GetMapping(value = "/{id}/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
-    public GetRestaurantListResponse getRestaurant(@PathVariable final Long id) {
+    public GetRestaurantListResponse getRestaurantList(@PathVariable final Long id) {
         final String restaurants = sessionService.getRestaurantList(id);
         System.out.println(restaurants);
         GetRestaurantListResponse response = new GetRestaurantListResponse(restaurants);
