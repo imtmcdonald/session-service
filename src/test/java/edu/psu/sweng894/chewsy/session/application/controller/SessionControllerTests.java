@@ -1,85 +1,155 @@
 package edu.psu.sweng894.chewsy.session.application.controller;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
-import edu.psu.sweng894.chewsy.session.application.request.CreateSessionRequest;
+import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
 import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
-import edu.psu.sweng894.chewsy.session.domain.repository.ConciergeRepository;
-import edu.psu.sweng894.chewsy.session.domain.repository.SessionRepository;
-import edu.psu.sweng894.chewsy.session.domain.service.DomainSessionService;
+import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
-import edu.psu.sweng894.chewsy.session.infrastructure.repository.ConciergeAPI.MockConciergeAPIRepository;
-import edu.psu.sweng894.chewsy.session.infrastructure.repository.PostgreSQLDB.MockPostgreSQLDBRepository;
+
+import org.json.JSONArray;
 
 @SpringBootTest
 public class SessionControllerTests {
-    public final String email = "tam6190@psu.edu";
-    public final String newEmail = "jon.doe@psu.edu";
-    public final Attendee attendee = new Attendee(email);
-    public final Attendee newAttendee = new Attendee(newEmail);
-    public final SessionRepository sessionRepository = new MockPostgreSQLDBRepository();
-    public final ConciergeRepository conciergeRepository = new MockConciergeAPIRepository();
-    public final SessionService sessionService = new DomainSessionService(sessionRepository, conciergeRepository);
-    public final SessionController sessionController = new SessionController(sessionService);
-    public final CreateSessionRequest createSessionRequest = new CreateSessionRequest(attendee);
-    public final CreateSessionResponse session = sessionController.createSession(createSessionRequest);
+    private SessionController classUnderTest;
+    private SessionService sessionService;
 
-    @Test
-    public void testSessionController_CreateSession() {
-        CreateSessionResponse actual = sessionController.createSession(createSessionRequest);
-        assertNotNull(actual.getId());
+    @BeforeEach
+    public void setUp() {
+        sessionService = mock(SessionService.class);
+        classUnderTest = new SessionController(sessionService);
     }
 
     @Test
-    public void testSessionController_getRestaurant() {
-        String actual = sessionController.getSessionStatus(session.getId());
-        assertEquals("CREATED", actual);
+    public void shouldCreateSession_thenReturnIt() {
+        CreateSessionResponse actual = classUnderTest.createSession();
+
+        assertNotNull(actual);
     }
 
     @Test
-    public void testSessionController_GetAttendees() {
-        GetAttendeesResponse actual = sessionController.getAttendee(session.getId());
+    public void shouldGetSessionStatus_thenReturnStatusCreated() {
+        when(sessionService.getStatus(anyLong())).thenReturn(SessionStatus.CREATED);
+
+        Long id = Long.parseLong("34");
+        String actual = classUnderTest.getSessionStatus(id);
+        String expected = "CREATED";
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldRequestAttendeeList_thenReturnAttendeeList() {
+        Long id = Long.parseLong("34");
+        List <Attendee> attendees = new ArrayList<Attendee>();
+
+        when(sessionService.getAttendees(anyLong())).thenReturn(attendees);
+
+        GetAttendeesResponse actual = classUnderTest.getAttendeeList(id);
+
+        assertEquals(attendees, actual.getAttendees());
+    }
+
+    @Test
+    public void shouldAddAttendee_thenValidateInAttendeeList() {
+        Long id = Long.parseLong("34");
+        String email = "test@email.com";
+        Attendee attendee = new Attendee(email);
+        List <Attendee> attendees = new ArrayList<Attendee>();
+        AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email);
+        
+        attendees.add(attendee);
+
+        when(sessionService.getAttendees(anyLong())).thenReturn(attendees);
+
+        classUnderTest.addAttendee(id, addAttendeeRequest);
+
+        GetAttendeesResponse actual = classUnderTest.getAttendeeList(id);
+
         assertEquals(email, actual.getAttendees().get(0).getEmail());
     }
 
     @Test
-    public void testAddAttendee() {
-        AddAttendeeRequest request = new AddAttendeeRequest(newAttendee);
-        sessionController.addAttendee(session.getId(), request);
-        GetAttendeesResponse actual = sessionController.getAttendee(session.getId());
-        assertEquals(newEmail, actual.getAttendees().get(1).getEmail());
+    public void shouldRemoveAttendee_thenValidateNotInAttendeeList() {
+        Long id = Long.parseLong("34");
+        String email = "test@email.com";
+        Attendee attendee = new Attendee(email);
+        List <Attendee> attendees = new ArrayList<Attendee>();
+        AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email);
+        RemoveAttendeeRequest removeAttendeeRequest = new RemoveAttendeeRequest(email);
+        
+        attendees.add(attendee);
+
+        when(sessionService.getAttendees(anyLong())).thenReturn(attendees);
+
+        classUnderTest.addAttendee(id, addAttendeeRequest);
+
+        GetAttendeesResponse attendeeList = classUnderTest.getAttendeeList(id);
+
+        assertEquals(email, attendeeList.getAttendees().get(0).getEmail());
+
+        attendees.remove(attendee);
+        classUnderTest.removeAttendee(id, removeAttendeeRequest);
+
+        GetAttendeesResponse actual = classUnderTest.getAttendeeList(id);
+
+        assertArrayEquals(attendees.toArray(), actual.getAttendees().toArray());
     }
 
     @Test
-    public void testSessionController_RemoveAttendee() {
-        AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(newAttendee);
-        RemoveAttendeeRequest request = new RemoveAttendeeRequest(attendee);
-        sessionController.addAttendee(session.getId(), addAttendeeRequest);
-        sessionController.removeAttendee(session.getId(), request);
-        GetAttendeesResponse actual = sessionController.getAttendee(session.getId());
-        assertEquals(newEmail, actual.getAttendees().get(0).getEmail());
+    public void shouldCOmpleteSession_theVerifyIt() {
+        when(sessionService.getStatus(anyLong())).thenReturn(SessionStatus.COMPLETED);
+
+        Long id = Long.parseLong("34");
+        classUnderTest.completeSession(id);
+
+        String actual = classUnderTest.getSessionStatus(id);
+        String expected = "COMPLETED";
+
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void testCompleteSession() {
-        sessionController.completeSession(session.getId());
-        String actual = sessionController.getSessionStatus(session.getId()).toString();
-        assertEquals("COMPLETED", actual);
-    }
+    public void shouldAddRestaurantList_thenVerifyIt() {
+        Long id = Long.parseLong("34");
+        String location = "23666";
+        int radius = 5;
+        AddRestaurantListRequest addRestaurantListRequest = new AddRestaurantListRequest(location, radius);
+        JSONObject jo = new JSONObject();
+        jo.put("NAME", "Burger King");
+        jo.put("RATING", "3.4");
+        jo.put("LOCATION", "112 Jefferson Ave, Newport News VA 23601");
 
-    // @Test
-    // public void testRestaurantList() {
-    //     sessionService.addRestaurantList(id, "23666", 5);
-    //     assertNotNull(sessionService.getRestaurantList(id));
-    //     System.out.println(sessionService.getRestaurantList(id));
-    // }
+        JSONArray restaurantList = new JSONArray();
+        restaurantList.put(jo);
+
+        when(sessionService.getRestaurantList(anyLong())).thenReturn(restaurantList.toString());
+
+        classUnderTest.addRestaurantList(id, addRestaurantListRequest);
+
+        String actual = classUnderTest.getRestaurantList(id).getRestaurantList();
+
+        assertEquals(restaurantList.toString(), actual);
+    }
 
 }

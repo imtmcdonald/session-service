@@ -1,29 +1,33 @@
 package edu.psu.sweng894.chewsy.session.infrastructure;
 
 import org.json.JSONArray;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
-import edu.psu.sweng894.chewsy.session.domain.repository.ConciergeRepository;
-import edu.psu.sweng894.chewsy.session.infrastructure.repository.ConciergeAPI.MockConciergeAPIRepository;
+import edu.psu.sweng894.chewsy.session.infrastructure.repository.ConciergeAPI.ConciergeAPIRespository;
 
 @SpringBootTest
 public class ConciergeAPIRespositoryTests {
+    private ConciergeAPIRespository classUnderTest;
+
+    @BeforeEach
+    public void setUp() {
+        classUnderTest = new ConciergeAPIRespository();
+    }
 
     @Test
-    public void testGetRestaurantsNotNull() {
-        ConciergeRepository restaurants = new MockConciergeAPIRepository();
-        JSONArray restaurantList;
-        try {
-            restaurantList = restaurants.getRestaurants("23666", 5);
-            assertNotNull(restaurantList);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    public void shoudlGetRestaurantList_andNotBeNull() throws UnsupportedEncodingException, IOException {
+        final String location = "23666";
+        final int radius = 5;
+
+        final JSONArray actual = classUnderTest.getRestaurants(location, radius);
+
+        assertNotNull(actual);
     }
 }
