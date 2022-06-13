@@ -3,6 +3,7 @@ package edu.psu.sweng894.chewsy.session.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -18,6 +19,9 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private SessionStatus status;
+    private LocalDate startDate;
+    @Column
+    private int duration;
     @Column
     @ElementCollection
     private List<Attendee> attendees = new ArrayList<Attendee>();
@@ -26,13 +30,16 @@ public class Session {
 
     public Session() {
         this.status = SessionStatus.CREATED;
+        this.startDate = LocalDate.now();
+        this.duration = 7;
+
     }
 
     @Override
     public String toString() {
         return String.format(
-            "Session[id=%d, status='%s', attendees='%s', restaurants='%s']",
-            id, status, attendees, restaurantList);
+            "Session[id=%d, status='%s', attendees='%s', restaurants='%s', expiration='%s']",
+            id, status, attendees, restaurantList, startDate, duration);
     }
 
     public Long getId() {
@@ -41,6 +48,19 @@ public class Session {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setDuration(int duration) {
+        validateState();
+        this.duration = duration;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
     public void setStatusComplete() {
@@ -75,9 +95,17 @@ public class Session {
         return Collections.unmodifiableList(attendees);
     }
 
+    public void setStatusExpired() {
+        validateState();
+        this.status = SessionStatus.EXPIRED;
+    }
+
     private void validateState() {
         if (SessionStatus.COMPLETED.equals(status)) {
             throw new DomainException("The session is in completed state.");
+        }
+        if (SessionStatus.EXPIRED.equals(status)) {
+            throw new DomainException("The session expired.");
         }
     }
 }

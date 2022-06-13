@@ -10,6 +10,7 @@ import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
 import edu.psu.sweng894.chewsy.session.application.request.CreateAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest;
+import edu.psu.sweng894.chewsy.session.application.request.SetDurationRequest;
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetRestaurantListResponse;
@@ -39,6 +40,13 @@ public class SessionController {
         final Long id = sessionService.createSession();
         
         return new CreateSessionResponse(id);
+    }
+
+    
+    @CrossOrigin(origins = "*")
+    @PostMapping(value = "/{id}/set_duration", consumes = MediaType.APPLICATION_JSON_VALUE)
+    void setDuration(@PathVariable final Long id, @RequestBody final SetDurationRequest setDurationRequest) {
+        sessionService.setDuration(id, setDurationRequest.getDuration());
     }
 
     @CrossOrigin(origins = "*")

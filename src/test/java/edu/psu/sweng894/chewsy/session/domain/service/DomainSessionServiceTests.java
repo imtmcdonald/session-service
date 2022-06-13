@@ -1,7 +1,9 @@
 package edu.psu.sweng894.chewsy.session.domain.service;
 
+import java.beans.Transient;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -77,8 +80,6 @@ public class DomainSessionServiceTests {
 
         List<Attendee> actual = classUnderTest.getAttendees(id);
 
-        verify(sessionRepository).findById(any());
-
         System.out.println(actual);
         assertNotNull(actual);
     }
@@ -145,5 +146,17 @@ public class DomainSessionServiceTests {
 
         verify(sessionRepository).save(any(Session.class));
         verify(conciergeRepository).getRestaurants(anyString(), anyInt());
+    }
+
+    @Test
+    public void shouldSetDuration_thenSaveIt() {
+        int duration = 7;
+        Session session = spy(SessionProvider.getCreatedSession());
+        when(sessionRepository.findById(session.getId())).thenReturn(Optional.of(session));
+
+        classUnderTest.setDuration(session.getId(), duration);
+
+        verify(sessionRepository).save(any(Session.class));
+        verify(session).setDuration(anyInt());
     }
 }

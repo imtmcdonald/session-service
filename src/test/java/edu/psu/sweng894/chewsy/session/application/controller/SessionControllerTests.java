@@ -2,11 +2,8 @@ package edu.psu.sweng894.chewsy.session.application.controller;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -117,7 +114,7 @@ public class SessionControllerTests {
     }
 
     @Test
-    public void shouldCOmpleteSession_theVerifyIt() {
+    public void shouldCompleteSession_theVerifyIt() {
         when(sessionService.getStatus(anyLong())).thenReturn(SessionStatus.COMPLETED);
 
         Long id = Long.parseLong("34");
@@ -151,5 +148,4 @@ public class SessionControllerTests {
 
         assertEquals(restaurantList.toString(), actual);
     }
-
 }
