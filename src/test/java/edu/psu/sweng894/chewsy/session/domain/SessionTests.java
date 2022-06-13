@@ -2,9 +2,9 @@ package edu.psu.sweng894.chewsy.session.domain;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,5 +116,43 @@ public class SessionTests {
         final String actual = classUnderTest.toString();
 
         assertNotNull(actual);
+    }
+
+    @Test
+    public void shouldSetStatusExpired_thenThrowErrorWithStatusExpired() {
+        classUnderTest.setStatusExpired();
+
+        final DomainException thrown = assertThrows(DomainException.class, () -> 
+            classUnderTest.setStatusExpired());
+
+        final String expected = "The session expired.";
+    
+        assertEquals(expected, thrown.getMessage());
+    }
+
+    @Test
+    public void shouldSetDuration_thenVerifyIt() {
+        int duration = 3;
+        classUnderTest.setDuration(duration);
+
+        int actual = classUnderTest.getDuration();
+
+        assertEquals(duration, actual);
+    }
+
+    @Test
+    public void shouldGetDuration_thenReturnDefault() {
+        int expected = 7;
+        int actual = classUnderTest.getDuration();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldGetStartDate_thenReturnIt() {
+        LocalDate expected = LocalDate.now();
+        LocalDate actual = classUnderTest.getStartDate();
+
+        assertEquals(expected, actual);
     }
 }

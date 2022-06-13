@@ -25,4 +25,6 @@ public interface SessionService {
     List<Attendee> getAttendees(Long id);
 
     SessionStatus getStatus(Long id);
+
+    void setDuration(final Long id, final int duration);
 }
