@@ -13,7 +13,7 @@ steps:
 - task: Gradle@3
   inputs:
     gradleWrapperFile: 'gradlew'
-    tasks: 'build, test'
+    tasks: 'build test'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     testRunTitle: 'Session Microservice Tests'
