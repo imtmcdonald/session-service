@@ -27,11 +27,13 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping(value = "/new_user", consumes = MediaType.APPLICATION_JSON_VALUE)
     void createAttendee(@RequestBody final CreateAttendeeRequest createAttendeeRequest) {
         sessionService.createAttendee(createAttendeeRequest.getEmail()); 
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping(value = "/create_session", produces = MediaType.APPLICATION_JSON_VALUE)
     CreateSessionResponse createSession() {
         final Long id = sessionService.createSession();
@@ -39,6 +41,7 @@ public class SessionController {
         return new CreateSessionResponse(id);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping(value = "/{id}/status", produces = MediaType.APPLICATION_JSON_VALUE)
     String getSessionStatus(@PathVariable final Long id) {
         final SessionStatus sessionStatus = sessionService.getStatus(id);
@@ -48,11 +51,13 @@ public class SessionController {
         return sessionStatus.toString();
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping(value = "/{id}/status/complete")
     void completeSession(@PathVariable final Long id) {
         sessionService.completeSession(id);
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping(value = "/{id}/attendees", produces = MediaType.APPLICATION_JSON_VALUE)
     GetAttendeesResponse getAttendeeList(@PathVariable final Long id) {
         final List<Attendee> attendees = sessionService.getAttendees(id);
@@ -60,21 +65,25 @@ public class SessionController {
         return new GetAttendeesResponse(attendees);
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
         sessionService.addAttendee(id, addAttendeeRequest.getEmail());
     }
 
+    @CrossOrigin(origins = "*")
     @DeleteMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void removeAttendee(@PathVariable final Long id, @RequestBody final RemoveAttendeeRequest removeAttendeeRequest) {
         sessionService.removeAttendee(id, removeAttendeeRequest.getEmail());
     }
 
+    @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/restaurants", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addRestaurantList(@PathVariable final Long id, @RequestBody final AddRestaurantListRequest addRestaurantListRequest) {
         sessionService.addRestaurantList(id, addRestaurantListRequest.getLocation(), addRestaurantListRequest.getRadius());
     }
 
+    @CrossOrigin(origins = "*")
     @GetMapping(value = "/{id}/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
     public GetRestaurantListResponse getRestaurantList(@PathVariable final Long id) {
         final String restaurants = sessionService.getRestaurantList(id);
