@@ -20,6 +20,6 @@ steps:
     codeCoverageToolOption: 'JaCoCo'
     codeCoverageClassFilesDirectories: 'build/classes/main/'
     javaHomeOption: 'JDKVersion'
-    sonarQubeRunAnalysis: true
+    sonarQubeRunAnalysis: false
     sqGradlePluginVersionChoice: 'build'
     spotBugsAnalysis: false
