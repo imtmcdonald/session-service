@@ -24,3 +24,6 @@ steps:
     sonarQubeRunAnalysis: false
     sqGradlePluginVersionChoice: 'build'
     spotBugsAnalysis: false
+    summaryFileLocation: '${System.DefaultWorkingDirectory}/**/reports/jacoco/test/jacocoTestReport.xml'
+    reportDirectory: '${System.DefaultWorkingDirectory}/**/reports/jacoco/test/html'
+
