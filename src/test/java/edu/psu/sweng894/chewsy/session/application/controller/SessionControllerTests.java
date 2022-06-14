@@ -13,7 +13,6 @@ import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
@@ -26,7 +25,6 @@ import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
 
 import org.json.JSONArray;
 
-@SpringBootTest
 public class SessionControllerTests {
     private SessionController classUnderTest;
     private SessionService sessionService;

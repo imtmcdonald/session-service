@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.psu.sweng894.chewsy.session.infrastructure.repository.ConciergeAPI.ConciergeAPIRespository;
 
-@SpringBootTest
 public class ConciergeAPIRespositoryTests {
     private ConciergeAPIRespository classUnderTest;
 
