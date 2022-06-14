@@ -22,7 +22,7 @@ plugins {
 }
 
 group = 'edu.psu.sweng894.chewsy'
-version = '0.0.1-SNAPSHOT'
+version = '0.1.0'
 sourceCompatibility = '17'
 
 repositories {
