@@ -9,8 +9,6 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-container: gradle:jdk17
-
 steps:
 - task: Gradle@3
   inputs:
@@ -21,7 +19,7 @@ steps:
     testRunTitle: 'Session Microservice Tests'
     codeCoverageToolOption: 'JaCoCo'
     codeCoverageClassFilesDirectories: 'build/classes/main/'
-    javaHomeOption: 'path'
+    javaHomeOption: 'JDKVersion'
     sonarQubeRunAnalysis: false
     sqGradlePluginVersionChoice: 'build'
     spotBugsAnalysis: false
