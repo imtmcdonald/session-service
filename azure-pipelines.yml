@@ -24,6 +24,12 @@ steps:
     sonarQubeRunAnalysis: false
     sqGradlePluginVersionChoice: 'build'
     spotBugsAnalysis: false
-    summaryFileLocation: '${System.DefaultWorkingDirectory}/**/reports/jacoco/test/jacocoTestReport.xml'
-    reportDirectory: '${System.DefaultWorkingDirectory}/**/reports/jacoco/test/html'
 
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: '${System.DefaultWorkingDirectory}/**/reports/jacoco/test/jacocoTestReport.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)/session-service/src/main/java/'
+    reportDirectory: '${System.DefaultWorkingDirectory}/**/reports/jacoco/test/html'
+    additionalCodeCoverageFiles: '$(System.DefaultWorkingDirectory)/**/*.exec'
+    failIfCoverageEmpty: true
