@@ -11,10 +11,12 @@ import org.json.JSONObject;
 
 import edu.psu.sweng894.chewsy.session.domain.repository.ConciergeRepository;
 import org.springframework.stereotype.Repository;
+import org.apache.commons.lang3.StringUtils;
+
 
 @Repository
 public class ConciergeAPIRespository implements ConciergeRepository {
-    private String conciergeEndpoint = System.getenv("CONCIERGE_ENDPOINT");
+    private String conciergeEndpoint =  StringUtils.defaultIfEmpty(System.getenv("CONCIERGE_ENDPOINT"), "http://localhost:8089/find");
     
     public JSONArray getRestaurants(String location, int radius) {
         JSONArray restaurantList = new JSONArray();

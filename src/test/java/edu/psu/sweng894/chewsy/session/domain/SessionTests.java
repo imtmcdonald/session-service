@@ -11,11 +11,9 @@ import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import org.json.JSONArray;
 
-@SpringBootTest
 public class SessionTests {
     private Session classUnderTest;
     String email = "test@email.com";

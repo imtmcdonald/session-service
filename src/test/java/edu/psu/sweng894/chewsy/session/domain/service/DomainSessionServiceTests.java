@@ -1,9 +1,7 @@
 package edu.psu.sweng894.chewsy.session.domain.service;
 
-import java.beans.Transient;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,11 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-
-import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.Session;
@@ -26,7 +21,6 @@ import edu.psu.sweng894.chewsy.session.domain.repository.ConciergeRepository;
 import edu.psu.sweng894.chewsy.session.domain.repository.SessionRepository;
 import org.json.JSONArray;
 
-@SpringBootTest
 public class DomainSessionServiceTests {
 
     private SessionRepository sessionRepository;
