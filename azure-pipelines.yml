@@ -17,8 +17,6 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     testRunTitle: 'Session Microservice Tests'
-    codeCoverageToolOption: 'JaCoCo'
-    codeCoverageClassFilesDirectories: 'build/classes/main/'
     jdkVersionOption: '1.17'
     javaHomeOption: 'JDKVersion'
     sonarQubeRunAnalysis: false
