@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +16,8 @@ import java.util.List;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
@@ -20,7 +25,11 @@ import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
+import edu.psu.sweng894.chewsy.session.domain.Message;
+import edu.psu.sweng894.chewsy.session.domain.MessageStatus;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
+import edu.psu.sweng894.chewsy.session.domain.service.EmailMessageService;
+import edu.psu.sweng894.chewsy.session.domain.service.MessageService;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
 
 import org.json.JSONArray;
@@ -28,11 +37,13 @@ import org.json.JSONArray;
 public class SessionControllerTests {
     private SessionController classUnderTest;
     private SessionService sessionService;
+    private MessageService messageService;
 
     @BeforeEach
     public void setUp() {
         sessionService = mock(SessionService.class);
-        classUnderTest = new SessionController(sessionService);
+        messageService = mock(MessageService.class);
+        classUnderTest = new SessionController(sessionService, messageService);
     }
 
     @Test
@@ -72,11 +83,23 @@ public class SessionControllerTests {
         Attendee attendee = new Attendee(email);
         List <Attendee> attendees = new ArrayList<Attendee>();
         AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email);
+        Message message = new Message();
+        message.setMessage("test");
+        message.setRecipient(email);
         
         attendees.add(attendee);
 
         when(sessionService.getAttendees(anyLong())).thenReturn(attendees);
-
+        when(messageService.createMessage(anyString(), anyString())).thenReturn(message);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable{
+                Message message = (Message) invocation.getArguments()[0];
+                message.setStatusSent();
+                return null;
+            }
+        }).when(messageService).sendMessage(message);
+     
         classUnderTest.addAttendee(id, addAttendeeRequest);
 
         GetAttendeesResponse actual = classUnderTest.getAttendeeList(id);

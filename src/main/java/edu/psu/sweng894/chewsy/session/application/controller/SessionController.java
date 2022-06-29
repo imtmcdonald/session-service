@@ -16,16 +16,19 @@ import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse
 import edu.psu.sweng894.chewsy.session.application.response.GetRestaurantListResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
+import edu.psu.sweng894.chewsy.session.domain.service.MessageService;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
 
 @RestController
 @RequestMapping("/sessions")
 public class SessionController {
     private final SessionService sessionService;
+    private final MessageService messageService;
     
     @Autowired
-    public SessionController(SessionService sessionService) {
+    public SessionController(SessionService sessionService, MessageService messageService) {
         this.sessionService = sessionService;
+        this.messageService = messageService;
     }
 
     @CrossOrigin(origins = "*")
@@ -42,7 +45,6 @@ public class SessionController {
         return new CreateSessionResponse(id);
     }
 
-    
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/set_duration", consumes = MediaType.APPLICATION_JSON_VALUE)
     void setDuration(@PathVariable final Long id, @RequestBody final SetDurationRequest setDurationRequest) {
@@ -77,6 +79,7 @@ public class SessionController {
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
         sessionService.addAttendee(id, addAttendeeRequest.getEmail());
+        messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), Long.toString(id)));
     }
 
     @CrossOrigin(origins = "*")
