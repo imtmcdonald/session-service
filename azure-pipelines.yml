@@ -9,6 +9,10 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  serviceConnection: CHEWSY_SESSION_SERVICE
+  appServiceName: chewsy-session
+
 steps:
 - task: Gradle@3
   inputs:
@@ -31,3 +35,31 @@ steps:
     reportDirectory: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/html'
     additionalCodeCoverageFiles: '$(System.DefaultWorkingDirectory)/**/build/jacoco/*.exec'
     failIfCoverageEmpty: true
+
+- task: CopyFiles@2
+  displayName: 'Copy files'
+  inputs:
+    sourceFolder: 'build' 
+    Contents: '**/*'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    cleanTargetFolder: true
+- task: ArchiveFiles@2
+  displayName: 'Archive files'
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    includeRootFolder: false
+    archiveType: zip
+    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    replaceExistingArchive: true
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifacts'
+  inputs: 
+    pathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+- task: AzureWebApp@1
+  displayName: 'Deploy to Azure Web Apps'
+  inputs:
+    azureSubscription: '$(serviceConnection)'
+    appName: '$(appServiceName)'
+    appType: webApp
+    package: '$(System.ArtifactsDirectory)/$(Build.BuildId).zip'
