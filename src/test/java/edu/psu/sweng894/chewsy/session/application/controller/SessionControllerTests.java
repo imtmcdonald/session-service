@@ -6,33 +6,27 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
-import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
+import edu.psu.sweng894.chewsy.session.application.request.CreateSessionRequest;
 import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.Message;
-import edu.psu.sweng894.chewsy.session.domain.MessageStatus;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
-import edu.psu.sweng894.chewsy.session.domain.service.EmailMessageService;
 import edu.psu.sweng894.chewsy.session.domain.service.MessageService;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
-
-import org.json.JSONArray;
 
 public class SessionControllerTests {
     private SessionController classUnderTest;
@@ -48,7 +42,11 @@ public class SessionControllerTests {
 
     @Test
     public void shouldCreateSession_thenReturnIt() {
-        CreateSessionResponse actual = classUnderTest.createSession();
+        int duration = 3;
+        String location = "23666";
+        int radius = 5;
+        CreateSessionRequest createSessionRequest = new CreateSessionRequest(location, radius, duration);
+        CreateSessionResponse actual = classUnderTest.createSession(createSessionRequest);
 
         assertNotNull(actual);
     }
@@ -145,28 +143,5 @@ public class SessionControllerTests {
         String expected = "COMPLETED";
 
         assertEquals(expected, actual);
-    }
-
-    @Test
-    public void shouldAddRestaurantList_thenVerifyIt() {
-        Long id = Long.parseLong("34");
-        String location = "23666";
-        int radius = 5;
-        AddRestaurantListRequest addRestaurantListRequest = new AddRestaurantListRequest(location, radius);
-        JSONObject jo = new JSONObject();
-        jo.put("NAME", "Burger King");
-        jo.put("RATING", "3.4");
-        jo.put("LOCATION", "112 Jefferson Ave, Newport News VA 23601");
-
-        JSONArray restaurantList = new JSONArray();
-        restaurantList.put(jo);
-
-        when(sessionService.getRestaurantList(anyLong())).thenReturn(restaurantList.toString());
-
-        classUnderTest.addRestaurantList(id, addRestaurantListRequest);
-
-        String actual = classUnderTest.getRestaurantList(id).getRestaurantList();
-
-        assertEquals(restaurantList.toString(), actual);
     }
 }

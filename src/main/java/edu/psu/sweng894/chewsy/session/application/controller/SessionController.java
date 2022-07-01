@@ -7,10 +7,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
-import edu.psu.sweng894.chewsy.session.application.request.AddRestaurantListRequest;
 import edu.psu.sweng894.chewsy.session.application.request.CreateAttendeeRequest;
+import edu.psu.sweng894.chewsy.session.application.request.CreateSessionRequest;
 import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest;
-import edu.psu.sweng894.chewsy.session.application.request.SetDurationRequest;
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetRestaurantListResponse;
@@ -38,17 +37,13 @@ public class SessionController {
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping(value = "/create_session", produces = MediaType.APPLICATION_JSON_VALUE)
-    CreateSessionResponse createSession() {
+    @PostMapping(value = "/create_session", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    CreateSessionResponse createSession(@RequestBody final CreateSessionRequest createSessionRequest) {
         final Long id = sessionService.createSession();
-        
-        return new CreateSessionResponse(id);
-    }
+        sessionService.setDuration(id, createSessionRequest.getDuration());
+        sessionService.addRestaurantList(id, createSessionRequest.getLocation(), createSessionRequest.getRadius());
 
-    @CrossOrigin(origins = "*")
-    @PostMapping(value = "/{id}/set_duration", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void setDuration(@PathVariable final Long id, @RequestBody final SetDurationRequest setDurationRequest) {
-        sessionService.setDuration(id, setDurationRequest.getDuration());
+        return new CreateSessionResponse(id);
     }
 
     @CrossOrigin(origins = "*")
@@ -86,12 +81,6 @@ public class SessionController {
     @DeleteMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void removeAttendee(@PathVariable final Long id, @RequestBody final RemoveAttendeeRequest removeAttendeeRequest) {
         sessionService.removeAttendee(id, removeAttendeeRequest.getEmail());
-    }
-
-    @CrossOrigin(origins = "*")
-    @PostMapping(value = "/{id}/restaurants", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void addRestaurantList(@PathVariable final Long id, @RequestBody final AddRestaurantListRequest addRestaurantListRequest) {
-        sessionService.addRestaurantList(id, addRestaurantListRequest.getLocation(), addRestaurantListRequest.getRadius());
     }
 
     @CrossOrigin(origins = "*")
