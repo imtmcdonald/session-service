@@ -73,6 +73,7 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
+        sessionService.createAttendee(addAttendeeRequest.getEmail()); 
         sessionService.addAttendee(id, addAttendeeRequest.getEmail());
         messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), Long.toString(id)));
     }
