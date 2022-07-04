@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface SessionService {
-    String createAttendee(String email);
+    String createAttendee(String email, String name);
 
     Long createSession();
 

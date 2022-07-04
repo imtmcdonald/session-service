@@ -33,7 +33,7 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/new_user", consumes = MediaType.APPLICATION_JSON_VALUE)
     void createAttendee(@RequestBody final CreateAttendeeRequest createAttendeeRequest) {
-        sessionService.createAttendee(createAttendeeRequest.getEmail()); 
+        sessionService.createAttendee(createAttendeeRequest.getEmail(), createAttendeeRequest.getName()); 
     }
 
     @CrossOrigin(origins = "*")
@@ -73,7 +73,7 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
-        sessionService.createAttendee(addAttendeeRequest.getEmail()); 
+        sessionService.createAttendee(addAttendeeRequest.getEmail(), addAttendeeRequest.getName()); 
         sessionService.addAttendee(id, addAttendeeRequest.getEmail());
         messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), Long.toString(id)));
     }

@@ -50,12 +50,13 @@ public class DomainSessionServiceTests {
 
     @Test
     public void shouldCreateAttendee_thenSaveIt() {
-        String email = "tam6190@psu.edu";
-        Attendee attendee = new Attendee(email);
+        String email = "test@email.com";
+        String name = "test";
+        Attendee attendee = new Attendee(email, name);
 
         when(attendeeRepository.save(any(Attendee.class))).thenReturn(attendee);
 
-        final String actual = classUnderTest.createAttendee(email);
+        final String actual = classUnderTest.createAttendee(email, name);
         System.out.println(actual);
 
         verify(attendeeRepository).save(any(Attendee.class));
@@ -65,9 +66,10 @@ public class DomainSessionServiceTests {
     @Test
     public void shouldFindSession_thenShowAttendees() {
         Long id = Long.parseLong("3");
-        String email = "tam6190@psu.edu";
+        String email = "test@email.com";
+        String name = "test";
         Session session = new Session();
-        Attendee attendee = new Attendee(email);
+        Attendee attendee = new Attendee(email, name);
         session.addAttendee(attendee);
 
         when(sessionRepository.findById(any())).thenReturn(Optional.of(session));
@@ -81,8 +83,9 @@ public class DomainSessionServiceTests {
     @Test
     public void shouldAddAttendee_thenSaveIt() {
         Session session = spy(SessionProvider.getCreatedSession());
-        String email = "jon.do@psu.edu";
-        Attendee attendee = new Attendee(email);
+        String email = "test@email.com";
+        String name = "test";
+        Attendee attendee = new Attendee(email, name);
 
         when(attendeeRepository.findById(anyString())).thenReturn(Optional.of(attendee));
         when(sessionRepository.findById(session.getId())).thenReturn(Optional.of(session));
@@ -96,8 +99,9 @@ public class DomainSessionServiceTests {
     @Test
     public void shouldRemoveAttendee_thenSaveIt() {
         Session session = spy(SessionProvider.getCreatedSession());
-        String email = "jon.do@psu.edu";
-        Attendee attendee = new Attendee(email);
+        String email = "test@email.com";
+        String name = "test";
+        Attendee attendee = new Attendee(email, name);
 
         when(attendeeRepository.findById(anyString())).thenReturn(Optional.of(attendee));
         when(sessionRepository.findById(session.getId())).thenReturn(Optional.of(session));

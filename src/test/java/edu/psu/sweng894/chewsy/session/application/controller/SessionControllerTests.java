@@ -78,9 +78,10 @@ public class SessionControllerTests {
     public void shouldAddAttendee_thenValidateInAttendeeList() {
         Long id = Long.parseLong("34");
         String email = "test@email.com";
-        Attendee attendee = new Attendee(email);
+        String name = "test";
+        Attendee attendee = new Attendee(email, name);
         List <Attendee> attendees = new ArrayList<Attendee>();
-        AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email);
+        AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email, name);
         Message message = new Message();
         message.setMessage("test");
         message.setRecipient(email);
@@ -109,9 +110,10 @@ public class SessionControllerTests {
     public void shouldRemoveAttendee_thenValidateNotInAttendeeList() {
         Long id = Long.parseLong("34");
         String email = "test@email.com";
-        Attendee attendee = new Attendee(email);
+        String name = "test";
+        Attendee attendee = new Attendee(email, name);
         List <Attendee> attendees = new ArrayList<Attendee>();
-        AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email);
+        AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email, name);
         RemoveAttendeeRequest removeAttendeeRequest = new RemoveAttendeeRequest(email);
         
         attendees.add(attendee);
