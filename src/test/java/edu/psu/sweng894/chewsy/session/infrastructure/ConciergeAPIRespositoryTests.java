@@ -16,7 +16,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 import edu.psu.sweng894.chewsy.session.infrastructure.repository.ConciergeAPI.ConciergeAPIRespository;
 
-@WireMockTest(httpPort = 8089)
+@WireMockTest(httpPort = 8080)
 public class ConciergeAPIRespositoryTests {
     private ConciergeAPIRespository classUnderTest;
 

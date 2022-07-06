@@ -16,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @Repository
 public class ConciergeAPIRespository implements ConciergeRepository {
-    private String conciergeEndpoint =  StringUtils.defaultIfEmpty(System.getenv("CONCIERGE_ENDPOINT"), "http://localhost:8089/find");
+    private String conciergeEndpoint =  StringUtils.defaultIfEmpty(System.getenv("CONCIERGE_ENDPOINT"), "http://localhost:8080/find");
     
     public JSONArray getRestaurants(String location, int radius) {
         JSONArray restaurantList = new JSONArray();

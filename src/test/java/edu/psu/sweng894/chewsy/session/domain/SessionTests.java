@@ -16,8 +16,8 @@ import org.json.JSONArray;
 
 public class SessionTests {
     private Session classUnderTest;
+    String name = "test";
     String email = "test@email.com";
-    String testEmail = "jon.doe@email.com";
     Long id = Long.parseLong("1234");
     Session testSession = new Session();
     List<Attendee> expected = new ArrayList<>();
@@ -48,7 +48,7 @@ public class SessionTests {
 
     @Test
     public void shouldAddAttendee_thenVerifyIsInList() {
-        final Attendee attendee = new Attendee(email);
+        final Attendee attendee = new Attendee(email, name);
         
         classUnderTest.addAttendee(attendee);  
         
@@ -59,7 +59,7 @@ public class SessionTests {
 
     @Test
     public void shouldRemoveAttendee_thenVerifyIsNotInList() {
-        final Attendee attendee = new Attendee(email);
+        final Attendee attendee = new Attendee(email, name);
 
         classUnderTest.addAttendee(attendee);
         classUnderTest.removeAttendee(attendee);

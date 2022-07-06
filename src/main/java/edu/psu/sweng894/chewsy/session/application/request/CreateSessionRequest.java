@@ -5,12 +5,14 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AddRestaurantListRequest {
+public class CreateSessionRequest {
     @NotNull String location;
     @NotNull int radius;
+    @NotNull int duration;
 
     @JsonCreator
-    public AddRestaurantListRequest(@JsonProperty("location") @NotNull final String location, @JsonProperty("radius") @NotNull final int radius) {
+    public CreateSessionRequest(@JsonProperty("location") @NotNull final String location, @JsonProperty("radius") @NotNull final int radius, @JsonProperty("duration") @NotNull final int duration) {
+        this.duration = duration;
         this.location = location;
         this.radius = radius;
     }
@@ -22,4 +24,9 @@ public class AddRestaurantListRequest {
     public int getRadius() {
         return radius;
     }
+
+    public int getDuration() {
+        return duration;
+    }    
+    
 }
