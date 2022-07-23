@@ -4,6 +4,8 @@ import java.util.List;
 
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
+
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +23,12 @@ public interface SessionService {
     void removeAttendee(Long id, String email);
 
     String getRestaurantList(Long id);
+
+    void setConsensus(Long id, int voters);
+
+    JSONObject getConsensus(Long id);
+
+    void sendConsensus(Long id, JSONObject consensus);
     
     List<Attendee> getAttendees(Long id);
 

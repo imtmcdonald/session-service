@@ -27,6 +27,8 @@ public class Session {
     private List<Attendee> attendees = new ArrayList<Attendee>();
     @Lob
     private String restaurantList;
+    @Lob
+    private String consensus;
 
     public Session() {
         this.status = SessionStatus.CREATED;
@@ -38,8 +40,8 @@ public class Session {
     @Override
     public String toString() {
         return String.format(
-            "Session[id=%d, status='%s', attendees='%s', restaurants='%s', expiration='%s']",
-            id, status, attendees, restaurantList, startDate, duration);
+            "Session[id=%d, status='%s', attendees='%s', restaurants='%s', expiration='%s', consensus='%s']",
+            id, status, attendees, restaurantList, startDate, duration, consensus);
     }
 
     public Long getId() {
@@ -93,6 +95,15 @@ public class Session {
 
     public List<Attendee> getAttendeeList() {
         return Collections.unmodifiableList(attendees);
+    }
+
+    public void setConsensus(String consensus) {
+        validateState();
+        this.consensus = consensus;
+    }
+
+    public String getConsensus() {
+        return this.consensus;
     }
 
     public void setStatusExpired() {

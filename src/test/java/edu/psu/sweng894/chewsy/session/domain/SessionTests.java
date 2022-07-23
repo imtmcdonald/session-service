@@ -153,4 +153,14 @@ public class SessionTests {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void shouldSetConsensus_thenReturnIt() {
+        String expected = "test";
+        classUnderTest.setConsensus(expected);
+
+        String actual = classUnderTest.getConsensus();
+
+        assertEquals(expected, actual);
+    }
 }
