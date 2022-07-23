@@ -1,8 +1,11 @@
 package edu.psu.sweng894.chewsy.session.domain;
 
+import org.json.JSONObject;
+
 public class Message {
     private String recipient;
-    private String message;
+    // private String message;
+    private JSONObject message;
     private MessageStatus status;
 
     public Message() {
@@ -21,7 +24,7 @@ public class Message {
         this.recipient = recipient;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(JSONObject message) {
         validateState();
         this.message = message;
     }
@@ -40,7 +43,7 @@ public class Message {
         return this.recipient;
     }
 
-    public String getMessage() {
+    public JSONObject getMessage() {
         return this.message;
     }
 

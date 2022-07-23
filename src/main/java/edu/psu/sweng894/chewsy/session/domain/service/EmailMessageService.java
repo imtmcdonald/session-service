@@ -28,7 +28,7 @@ public class EmailMessageService implements MessageService {
     }
 
     @Override
-    public Message createMessage(String recipient, String message) {
+    public Message createMessage(String recipient, JSONObject message) {
         Message newMessage = new Message();
 
         newMessage.setRecipient(recipient);
@@ -41,7 +41,6 @@ public class EmailMessageService implements MessageService {
     public void sendMessage(Message message) {
         MailjetRequest request;
         MailjetResponse response;
-        String url = System.getenv("WEB_CLIENT_URL") + "/" + message.getMessage();
 
         request = new MailjetRequest(Emailv31.resource)
         .property(Emailv31.MESSAGES, new JSONArray()
@@ -53,9 +52,9 @@ public class EmailMessageService implements MessageService {
                         .put(new JSONObject()
                             .put("Email", message.getRecipient())
                             .put("Name", "Friend")))
-                    .put(Emailv31.Message.SUBJECT, "You are invited to a Chewsy session!")
-                    .put(Emailv31.Message.TEXTPART, "Someone invited you to join them for a meal. Click the link to help them decide where to eat. " + url)
-                    .put(Emailv31.Message.HTMLPART, "<h1>Someone invited you to join them for a meal.</h1><br /><h2>Help decide where to eat.</h2><br /><p><a href=\"" + url +"\">Click Here to Choose!</a></p>")));
+                    .put(Emailv31.Message.SUBJECT, message.getMessage().get("subject"))
+                    .put(Emailv31.Message.TEXTPART, message.getMessage().get("textpart"))
+                    .put(Emailv31.Message.HTMLPART, message.getMessage().get("htmlpart"))));
         try {
             response = client.post(request);
             

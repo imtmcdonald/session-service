@@ -2,6 +2,7 @@ package edu.psu.sweng894.chewsy.session.application.controller;
 
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -73,9 +74,19 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
+        String url = System.getenv("WEB_CLIENT_URL") + "/" + id;
+        JSONObject message = new JSONObject();
+        String subject = "You are invited to a Chewsy session!";
+        String textpart = "Someone invited you to join them for a meal. Click the link to help them decide where to eat. " + url;
+        String htmlpart = "<h1>Someone invited you to join them for a meal.</h1><br /><h2>Help decide where to eat.</h2><br /><p><a href=\"" + url +"\">Click Here to Choose!</a></p>";
+
+        message.put("subject", subject);
+        message.put("textpart", textpart);
+        message.put("htmlpart", htmlpart);
+
         sessionService.createAttendee(addAttendeeRequest.getEmail(), addAttendeeRequest.getName()); 
         sessionService.addAttendee(id, addAttendeeRequest.getEmail());
-        messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), Long.toString(id)));
+        messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), message));
     }
 
     @CrossOrigin(origins = "*")
