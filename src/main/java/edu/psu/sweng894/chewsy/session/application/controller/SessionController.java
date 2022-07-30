@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
@@ -15,6 +16,7 @@ import edu.psu.sweng894.chewsy.session.application.response.CreateSessionRespons
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetRestaurantListResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
+import edu.psu.sweng894.chewsy.session.domain.Session;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
 import edu.psu.sweng894.chewsy.session.domain.service.MessageService;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
@@ -104,5 +106,24 @@ public class SessionController {
 
         System.out.println(response);
         return response;
+    }
+
+    @Scheduled(cron="0 0 0 * * *")
+    void checkSessionExpirations() {     
+        List<Session> sessions = sessionService.getSessions();
+
+        for (int i = 0; i < sessions.size(); i++) {
+            if (! sessionService.getStatus(sessions.get(i).getId()).equals(SessionStatus.COMPLETED)) {
+                System.out.println(sessions.get(i).getId());
+                System.out.println(sessionService.getStatus(sessions.get(i).getId()));
+                sessionService.checkExpiration(sessions.get(i).getId());
+                System.out.println(sessionService.getStatus(sessions.get(i).getId()));
+            }
+
+            if (sessionService.getStatus(sessions.get(i).getId()).equals(SessionStatus.EXPIRED)) {
+                System.out.println(sessions.get(i).getId());
+                sessionService.completeSession(sessions.get(i).getId());
+            }
+        }
     }
 }

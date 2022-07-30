@@ -117,15 +117,14 @@ public class SessionTests {
     }
 
     @Test
-    public void shouldSetStatusExpired_thenThrowErrorWithStatusExpired() {
+    public void shouldSetStatusExpired_thenVerifyIt() {
         classUnderTest.setStatusExpired();
 
-        final DomainException thrown = assertThrows(DomainException.class, () -> 
-            classUnderTest.setStatusExpired());
+        final SessionStatus actual = classUnderTest.getStatus();
 
-        final String expected = "The session expired.";
+        final SessionStatus expected = SessionStatus.EXPIRED;
     
-        assertEquals(expected, thrown.getMessage());
+        assertEquals(expected, actual);
     }
 
     @Test

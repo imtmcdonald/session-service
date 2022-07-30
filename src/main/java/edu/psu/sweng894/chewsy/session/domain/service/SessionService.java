@@ -3,6 +3,7 @@ package edu.psu.sweng894.chewsy.session.domain.service;
 import java.util.List;
 
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
+import edu.psu.sweng894.chewsy.session.domain.Session;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
 
 import org.json.JSONObject;
@@ -35,4 +36,8 @@ public interface SessionService {
     SessionStatus getStatus(Long id);
 
     void setDuration(final Long id, final int duration);
+
+    void checkExpiration(final Long id);
+
+    List<Session> getSessions();
 }
