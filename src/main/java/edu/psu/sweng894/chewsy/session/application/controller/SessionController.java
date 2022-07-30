@@ -2,8 +2,10 @@ package edu.psu.sweng894.chewsy.session.application.controller;
 
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
@@ -14,6 +16,7 @@ import edu.psu.sweng894.chewsy.session.application.response.CreateSessionRespons
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.application.response.GetRestaurantListResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
+import edu.psu.sweng894.chewsy.session.domain.Session;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
 import edu.psu.sweng894.chewsy.session.domain.service.MessageService;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
@@ -73,9 +76,19 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
+        String url = System.getenv("WEB_CLIENT_URL") + "/" + id;
+        JSONObject message = new JSONObject();
+        String subject = "You are invited to a Chewsy session!";
+        String textpart = "Someone invited you to join them for a meal. Click the link to help them decide where to eat. " + url;
+        String htmlpart = "<h1>Someone invited you to join them for a meal.</h1><br /><h2>Help decide where to eat.</h2><br /><p><a href=\"" + url +"\">Click Here to Choose!</a></p>";
+
+        message.put("subject", subject);
+        message.put("textpart", textpart);
+        message.put("htmlpart", htmlpart);
+
         sessionService.createAttendee(addAttendeeRequest.getEmail(), addAttendeeRequest.getName()); 
         sessionService.addAttendee(id, addAttendeeRequest.getEmail());
-        messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), Long.toString(id)));
+        messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), message));
     }
 
     @CrossOrigin(origins = "*")
@@ -93,5 +106,24 @@ public class SessionController {
 
         System.out.println(response);
         return response;
+    }
+
+    @Scheduled(cron="0 0 0 * * *")
+    void checkSessionExpirations() {     
+        List<Session> sessions = sessionService.getSessions();
+
+        for (int i = 0; i < sessions.size(); i++) {
+            if (! sessionService.getStatus(sessions.get(i).getId()).equals(SessionStatus.COMPLETED)) {
+                System.out.println(sessions.get(i).getId());
+                System.out.println(sessionService.getStatus(sessions.get(i).getId()));
+                sessionService.checkExpiration(sessions.get(i).getId());
+                System.out.println(sessionService.getStatus(sessions.get(i).getId()));
+            }
+
+            if (sessionService.getStatus(sessions.get(i).getId()).equals(SessionStatus.EXPIRED)) {
+                System.out.println(sessions.get(i).getId());
+                sessionService.completeSession(sessions.get(i).getId());
+            }
+        }
     }
 }

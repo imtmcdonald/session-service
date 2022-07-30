@@ -4,14 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -24,6 +25,8 @@ import edu.psu.sweng894.chewsy.session.application.response.CreateSessionRespons
 import edu.psu.sweng894.chewsy.session.application.response.GetAttendeesResponse;
 import edu.psu.sweng894.chewsy.session.domain.Attendee;
 import edu.psu.sweng894.chewsy.session.domain.Message;
+import edu.psu.sweng894.chewsy.session.domain.Session;
+import edu.psu.sweng894.chewsy.session.domain.SessionProvider;
 import edu.psu.sweng894.chewsy.session.domain.SessionStatus;
 import edu.psu.sweng894.chewsy.session.domain.service.MessageService;
 import edu.psu.sweng894.chewsy.session.domain.service.SessionService;
@@ -76,6 +79,11 @@ public class SessionControllerTests {
 
     @Test
     public void shouldAddAttendee_thenValidateInAttendeeList() {
+        JSONObject consensusMessage = new JSONObject();
+        String consensus = "test";
+        String subject = "It's Time to Eat!";
+        String textpart = "Voting is complete! Your group chose to eat at: " + consensus;
+        String htmlpart = "<h1>Voting is complete!</h1><br /><h2>Your group chose to eat at: </h2><br /><p> " + consensus + "</p>";
         Long id = Long.parseLong("34");
         String email = "test@email.com";
         String name = "test";
@@ -83,13 +91,17 @@ public class SessionControllerTests {
         List <Attendee> attendees = new ArrayList<Attendee>();
         AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email, name);
         Message message = new Message();
-        message.setMessage("test");
+
+        consensusMessage.put("subject", subject);
+        consensusMessage.put("textpart", textpart);
+        consensusMessage.put("htmlpart", htmlpart);
+        message.setMessage(consensusMessage);
         message.setRecipient(email);
         
         attendees.add(attendee);
 
         when(sessionService.getAttendees(anyLong())).thenReturn(attendees);
-        when(messageService.createMessage(anyString(), anyString())).thenReturn(message);
+        when(messageService.createMessage(email, consensusMessage)).thenReturn(message);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable{
@@ -145,5 +157,42 @@ public class SessionControllerTests {
         String expected = "COMPLETED";
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldCheckSessionExpirations_whenExpired_thenCompleteSession() {
+        Session session = spy(SessionProvider.getCreatedSession());
+
+        List<Session> sessions = new ArrayList<>();
+        sessions.add(session);
+
+        when(sessionService.getSessions()).thenReturn(sessions);
+        when(sessionService.getStatus(session.getId())).thenReturn(SessionStatus.EXPIRED);
+        
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable{
+                Session session = (Session) invocation.getArguments()[0];
+                session.setStatusExpired();
+
+                assertEquals(SessionStatus.EXPIRED, session.getStatus());
+
+                return session;
+            }
+        }).when(sessionService).checkExpiration(anyLong());
+
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable{
+                Session session = (Session) invocation.getArguments()[0];
+                session.setStatusComplete();
+
+                assertEquals(SessionStatus.COMPLETED, session.getStatus());
+
+                return session;
+            }
+        }).when(sessionService).completeSession(anyLong());
+        
+        classUnderTest.checkSessionExpirations();        
     }
 }

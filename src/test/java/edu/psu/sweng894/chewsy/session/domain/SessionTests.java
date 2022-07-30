@@ -117,15 +117,14 @@ public class SessionTests {
     }
 
     @Test
-    public void shouldSetStatusExpired_thenThrowErrorWithStatusExpired() {
+    public void shouldSetStatusExpired_thenVerifyIt() {
         classUnderTest.setStatusExpired();
 
-        final DomainException thrown = assertThrows(DomainException.class, () -> 
-            classUnderTest.setStatusExpired());
+        final SessionStatus actual = classUnderTest.getStatus();
 
-        final String expected = "The session expired.";
+        final SessionStatus expected = SessionStatus.EXPIRED;
     
-        assertEquals(expected, thrown.getMessage());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -150,6 +149,16 @@ public class SessionTests {
     public void shouldGetStartDate_thenReturnIt() {
         LocalDate expected = LocalDate.now();
         LocalDate actual = classUnderTest.getStartDate();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldSetConsensus_thenReturnIt() {
+        String expected = "test";
+        classUnderTest.setConsensus(expected);
+
+        String actual = classUnderTest.getConsensus();
 
         assertEquals(expected, actual);
     }

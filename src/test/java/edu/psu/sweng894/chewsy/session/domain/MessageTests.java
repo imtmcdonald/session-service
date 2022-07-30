@@ -2,13 +2,15 @@ package edu.psu.sweng894.chewsy.session.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+
 
 public class MessageTests {
     private Message classUnderTest;
     String recipient = "test@email.com";
-    String message = "test";
 
     @BeforeEach
     public void setUp() {
@@ -25,10 +27,19 @@ public class MessageTests {
     
     @Test
     public void shouldSetMessage_thenReturnIt() {
-        classUnderTest.setMessage(message);
-        String actual = classUnderTest.getMessage();
+        JSONObject expected = new JSONObject();
+        String url = "test.com";
+        String subject = "You are invited to a Chewsy session!";
+        String textpart = "Someone invited you to join them for a meal. Click the link to help them decide where to eat. " + url;
+        String htmlpart = "<h1>Someone invited you to join them for a meal.</h1><br /><h2>Help decide where to eat.</h2><br /><p><a href=\"" + url +"\">Click Here to Choose!</a></p>";
+        expected.put("subject", subject);
+        expected.put("textpart", textpart);
+        expected.put("htmlpart", htmlpart);
+        classUnderTest.setMessage(expected);
 
-        assertEquals(message, actual);
+        JSONObject actual = classUnderTest.getMessage();
+
+        assertEquals(expected, actual);
     }
 
     @Test

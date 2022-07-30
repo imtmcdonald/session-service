@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +20,7 @@ public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.ORDINAL)
     private SessionStatus status;
     private LocalDate startDate;
     @Column
@@ -27,6 +30,8 @@ public class Session {
     private List<Attendee> attendees = new ArrayList<Attendee>();
     @Lob
     private String restaurantList;
+    @Lob
+    private String consensus;
 
     public Session() {
         this.status = SessionStatus.CREATED;
@@ -38,8 +43,8 @@ public class Session {
     @Override
     public String toString() {
         return String.format(
-            "Session[id=%d, status='%s', attendees='%s', restaurants='%s', expiration='%s']",
-            id, status, attendees, restaurantList, startDate, duration);
+            "Session[id=%d, status='%s', attendees='%s', restaurants='%s', expiration='%s', consensus='%s']",
+            id, status, attendees, restaurantList, startDate, duration, consensus);
     }
 
     public Long getId() {
@@ -95,6 +100,15 @@ public class Session {
         return Collections.unmodifiableList(attendees);
     }
 
+    public void setConsensus(String consensus) {
+        validateState();
+        this.consensus = consensus;
+    }
+
+    public String getConsensus() {
+        return this.consensus;
+    }
+
     public void setStatusExpired() {
         validateState();
         this.status = SessionStatus.EXPIRED;
@@ -103,9 +117,6 @@ public class Session {
     private void validateState() {
         if (SessionStatus.COMPLETED.equals(status)) {
             throw new DomainException("The session is in completed state.");
-        }
-        if (SessionStatus.EXPIRED.equals(status)) {
-            throw new DomainException("The session expired.");
         }
     }
 }
