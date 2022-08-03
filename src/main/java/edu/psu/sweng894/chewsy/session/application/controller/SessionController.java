@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import edu.psu.sweng894.chewsy.session.application.request.AddAttendeeRequest;
-import edu.psu.sweng894.chewsy.session.application.request.CreateAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.request.CreateSessionRequest;
 import edu.psu.sweng894.chewsy.session.application.request.RemoveAttendeeRequest;
 import edu.psu.sweng894.chewsy.session.application.response.CreateSessionResponse;
@@ -31,12 +30,6 @@ public class SessionController {
     public SessionController(SessionService sessionService, MessageService messageService) {
         this.sessionService = sessionService;
         this.messageService = messageService;
-    }
-
-    @CrossOrigin(origins = "*")
-    @PostMapping(value = "/new_user", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void createAttendee(@RequestBody final CreateAttendeeRequest createAttendeeRequest) {
-        sessionService.createAttendee(createAttendeeRequest.getEmail(), createAttendeeRequest.getName()); 
     }
 
     @CrossOrigin(origins = "*")
@@ -76,7 +69,7 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
-        String url = System.getenv("WEB_CLIENT_URL") + "/" + id;
+        String url = System.getenv("WEB_CLIENT_URL") + "/joingroup/" + id + "/" + addAttendeeRequest.getEmail();
         JSONObject message = new JSONObject();
         String subject = "You are invited to a Chewsy session!";
         String textpart = "Someone invited you to join them for a meal. Click the link to help them decide where to eat. " + url;
@@ -86,8 +79,7 @@ public class SessionController {
         message.put("textpart", textpart);
         message.put("htmlpart", htmlpart);
 
-        sessionService.createAttendee(addAttendeeRequest.getEmail(), addAttendeeRequest.getName()); 
-        sessionService.addAttendee(id, addAttendeeRequest.getEmail());
+        sessionService.addAttendee(id, addAttendeeRequest.getEmail(), addAttendeeRequest.getName());
         messageService.sendMessage(messageService.createMessage(addAttendeeRequest.getEmail(), message));
     }
 

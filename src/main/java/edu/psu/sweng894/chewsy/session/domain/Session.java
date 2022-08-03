@@ -5,15 +5,18 @@ import java.util.Collections;
 import java.util.List;
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Session {
@@ -26,7 +29,7 @@ public class Session {
     @Column
     private int duration;
     @Column
-    @ElementCollection
+    @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Attendee> attendees = new ArrayList<Attendee>();
     @Lob
     private String restaurantList;
@@ -43,8 +46,8 @@ public class Session {
     @Override
     public String toString() {
         return String.format(
-            "Session[id=%d, status='%s', attendees='%s', restaurants='%s', expiration='%s', consensus='%s']",
-            id, status, attendees, restaurantList, startDate, duration, consensus);
+            "Session[id=%d, status='%s', restaurants='%s', startDate='%s', duration=%d, consensus='%s']",
+            id, status, restaurantList, startDate, duration, consensus);
     }
 
     public Long getId() {

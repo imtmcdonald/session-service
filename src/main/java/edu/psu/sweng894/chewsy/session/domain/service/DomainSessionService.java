@@ -37,18 +37,11 @@ public class DomainSessionService implements SessionService {
     }
 
     @Override
-    public String createAttendee(final String email, final String name) {
-        final Attendee attendee = new Attendee(email, name);
-        attendeeRepository.save(attendee);
-
-        return attendee.getEmail();
-    }
-
-    @Override
-    public void addAttendee(final Long id, final String email) {
+    public void addAttendee(final Long id, final String email, final String name) {
         // checkExpiration(id);
         final Session session = getSession(id);
-        final Attendee attendee = getAttendee(email);
+        final Attendee attendee = new Attendee(email, name, session);
+        attendeeRepository.save(attendee);
         session.addAttendee(attendee);
 
         sessionRepository.save(session);

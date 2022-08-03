@@ -87,7 +87,8 @@ public class SessionControllerTests {
         Long id = Long.parseLong("34");
         String email = "test@email.com";
         String name = "test";
-        Attendee attendee = new Attendee(email, name);
+        Session session = new Session();
+        Attendee attendee = new Attendee(email, name, session);
         List <Attendee> attendees = new ArrayList<Attendee>();
         AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email, name);
         Message message = new Message();
@@ -123,7 +124,8 @@ public class SessionControllerTests {
         Long id = Long.parseLong("34");
         String email = "test@email.com";
         String name = "test";
-        Attendee attendee = new Attendee(email, name);
+        Session session = new Session();
+        Attendee attendee = new Attendee(email, name, session);
         List <Attendee> attendees = new ArrayList<Attendee>();
         AddAttendeeRequest addAttendeeRequest = new AddAttendeeRequest(email, name);
         RemoveAttendeeRequest removeAttendeeRequest = new RemoveAttendeeRequest(email);
