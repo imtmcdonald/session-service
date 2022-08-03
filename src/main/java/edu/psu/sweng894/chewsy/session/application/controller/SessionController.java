@@ -76,7 +76,7 @@ public class SessionController {
     @CrossOrigin(origins = "*")
     @PostMapping(value = "/{id}/attendees", consumes = MediaType.APPLICATION_JSON_VALUE)
     void addAttendee(@PathVariable final Long id, @RequestBody final AddAttendeeRequest addAttendeeRequest) {
-        String url = System.getenv("WEB_CLIENT_URL") + "/" + id;
+        String url = System.getenv("WEB_CLIENT_URL") + "/joingroup/" + id + "/" + addAttendeeRequest.getEmail();
         JSONObject message = new JSONObject();
         String subject = "You are invited to a Chewsy session!";
         String textpart = "Someone invited you to join them for a meal. Click the link to help them decide where to eat. " + url;
