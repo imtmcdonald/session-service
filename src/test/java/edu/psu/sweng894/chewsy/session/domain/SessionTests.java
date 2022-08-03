@@ -48,7 +48,8 @@ public class SessionTests {
 
     @Test
     public void shouldAddAttendee_thenVerifyIsInList() {
-        final Attendee attendee = new Attendee(email, name);
+        final Session session = new Session();
+        final Attendee attendee = new Attendee(email, name, session);
         
         classUnderTest.addAttendee(attendee);  
         
@@ -59,7 +60,8 @@ public class SessionTests {
 
     @Test
     public void shouldRemoveAttendee_thenVerifyIsNotInList() {
-        final Attendee attendee = new Attendee(email, name);
+        final Session session = new Session();
+        final Attendee attendee = new Attendee(email, name, session);
 
         classUnderTest.addAttendee(attendee);
         classUnderTest.removeAttendee(attendee);

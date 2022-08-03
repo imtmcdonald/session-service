@@ -11,13 +11,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface SessionService {
-    String createAttendee(String email, String name);
-
     Long createSession();
 
     void addRestaurantList(final Long id, final String location, final int radius);
 
-    void addAttendee(Long id, String email);
+    void addAttendee(Long id, String email, String name);
 
     void completeSession(Long id);
 
