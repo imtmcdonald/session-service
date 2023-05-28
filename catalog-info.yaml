@@ -7,4 +7,4 @@ metadata:
 spec:
   type: api
   lifecycle: experimental
-  owner: imtmcdonald
+  owner: guests
