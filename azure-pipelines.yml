@@ -1,0 +1,65 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- development
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  serviceConnection: CHEWSY_SESSION_SERVICE
+  appServiceName: chewsy-session
+
+steps:
+- task: Gradle@3
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    tasks: 'build test'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    testRunTitle: 'Session Microservice Tests'
+    jdkVersionOption: '1.17'
+    javaHomeOption: 'JDKVersion'
+    sonarQubeRunAnalysis: false
+    sqGradlePluginVersionChoice: 'build'
+    spotBugsAnalysis: false
+
+- task: PublishCodeCoverageResults@1
+  inputs:
+    codeCoverageTool: 'JaCoCo'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/jacocoTestReport.xml'
+    pathToSources: '$(System.DefaultWorkingDirectory)/**/src/main/java/'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/**/build/reports/jacoco/test/html'
+    additionalCodeCoverageFiles: '$(System.DefaultWorkingDirectory)/**/build/jacoco/*.exec'
+    failIfCoverageEmpty: true
+
+- task: CopyFiles@2
+  displayName: 'Copy files'
+  inputs:
+    sourceFolder: 'build' 
+    Contents: '**/*'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    cleanTargetFolder: true
+- task: ArchiveFiles@2
+  displayName: 'Archive files'
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    includeRootFolder: false
+    archiveType: zip
+    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    replaceExistingArchive: true
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Build Artifacts'
+  inputs: 
+    pathtoPublish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+
+- task: AzureWebApp@1
+  displayName: 'Deploy to Azure Web Apps'
+  inputs:
+    azureSubscription: '$(serviceConnection)'
+    appName: '$(appServiceName)'
+    appType: webApp
+    package: '$(System.ArtifactsDirectory)/$(Build.BuildId).zip'
